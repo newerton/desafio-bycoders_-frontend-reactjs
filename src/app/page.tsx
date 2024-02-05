@@ -1,6 +1,19 @@
+'use client';
+
+import { useState } from 'react';
+
+import { AutoCompleteGeocoding } from '@/components/fields/autocomplete-gecoding';
+import { FormSearchByCoordinates } from '@/components/forms/search-by-coordinates';
 import { Cloud } from '@/components/ui/cloud';
 
 export default function Home() {
+  const [searchByCoordinates, setSearchByCoordinates] =
+    useState<boolean>(false);
+
+  const handleSearchByCoordinates = () => {
+    setSearchByCoordinates((prev) => !prev);
+  };
+
   return (
     <div className="relative isolate px-6 pt-14 lg:px-8">
       <Cloud.Root left>
@@ -19,19 +32,14 @@ export default function Home() {
             search bar.
           </p>
           <div className="flex flex-col items-center gap-4">
-            <div className="flex gap-4">
-              <div>
-                <input
-                  name="search"
-                  placeholder="Search for a city or place"
-                  className="bg-gray-100"
-                />
-              </div>
-              <div>
-                <button>Add</button>
-              </div>
+            {!searchByCoordinates && <AutoCompleteGeocoding />}
+            {searchByCoordinates && <FormSearchByCoordinates />}
+
+            <div onClick={handleSearchByCoordinates} className="cursor-pointer">
+              {searchByCoordinates
+                ? 'Search by city or place'
+                : 'Search by coordinates'}
             </div>
-            <div>Search by coordinates</div>
           </div>
         </div>
       </div>
