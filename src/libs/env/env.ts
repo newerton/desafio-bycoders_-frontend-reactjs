@@ -27,7 +27,6 @@ export const env = createEnv({
     NEXT_PUBLIC_HOST: z.string().url().optional(),
     NEXT_PUBLIC_VERCEL_URL: z.string().optional(),
     NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
-    NEXT_PUBLIC_GOOGLE_API_MAPS_KEY: z.string().optional(),
   },
   /*
    * Server-side Environment variables, not available on the client. Will throw
@@ -55,6 +54,12 @@ export const env = createEnv({
      * Email
      */
     RESEND_API_KEY: optionalString,
+
+    /**
+     * Open Meteo
+     */
+    OPEN_METEO_GEOCODING_URL: z.string(),
+    OPEN_METEO_API_URL: z.string(),
   },
   /**
    * Shared between server and client
@@ -80,7 +85,5 @@ export const env = createEnv({
     NEXT_PUBLIC_HOST: process.env.NEXT_PUBLIC_HOST,
     NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
     NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
-    NEXT_PUBLIC_GOOGLE_API_MAPS_KEY:
-      process.env.NEXT_PUBLIC_GOOGLE_API_MAPS_KEY,
   },
 });
