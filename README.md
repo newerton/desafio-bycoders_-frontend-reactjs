@@ -13,8 +13,9 @@ Teste Técnico - Open Meteo
 - cva, clsx and twMerge
 - Dayjs
 - Lottie
-- React Icons
 - React Hook Form
+- React Icons
+- React Query
 - Zod
 - Zustand
 
