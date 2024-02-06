@@ -58,8 +58,15 @@ export const env = createEnv({
     /**
      * Open Meteo
      */
-    OPEN_METEO_GEOCODING_URL: z.string(),
-    OPEN_METEO_API_URL: z.string(),
+    OPEN_METEO_GEOCODING_URL: z.string().url(),
+    OPEN_METEO_API_URL: z.string().url(),
+    OPEN_METEO_AIR_QUALITY_API_URL: z.string().url(),
+
+    /**
+     * ArcGIS
+     */
+    ARCGIS_GEOCODING_API_URL: z.string().url(),
+    ARCGIS_GEOCODING_API_KEY: z.string().trim().min(1),
   },
   /**
    * Shared between server and client

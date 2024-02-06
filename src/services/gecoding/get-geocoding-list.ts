@@ -2,7 +2,7 @@
 
 import { env } from '@/libs/env';
 
-export interface GeocodingListResponse {
+export type GeocodingListResponse = {
   id: number;
   name: string;
   latitude: number;
@@ -18,7 +18,8 @@ export interface GeocodingListResponse {
   country: string;
   admin1: string;
   admin2: string;
-}
+  timestamp: string;
+};
 
 export const getGeocodingList = async (
   name: string | null,

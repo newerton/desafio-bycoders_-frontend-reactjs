@@ -8,6 +8,7 @@ export const useGetGeocodingList = (name: string | null) => {
     queryFn: async () => getGeocodingList(name),
     refetchOnWindowFocus: false,
     initialData: [],
+    enabled: !!name,
   });
 
   return query;

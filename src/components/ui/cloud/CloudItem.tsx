@@ -4,14 +4,14 @@ import { forwardRef } from 'react';
 import { cn } from '@/libs/utils';
 
 const cloudItemVariants = cva(
-  'relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#f9d300] to-[#3fb9e6] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]',
+  'relative z-0 aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#f9d300] to-[#3fb9e6] opacity-30 sm:w-[72.1875rem]',
   {
     variants: {
       left: {
-        true: 'relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#f9d300] to-[#3fb9e6] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]',
+        true: 'left-[calc(50%-11rem)] rotate-[30deg] sm:left-[calc(50%-30rem)]',
       },
       right: {
-        true: 'relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#f9d300] to-[#3fb9e6] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]',
+        true: 'left-[calc(50%+3rem)] sm:left-[calc(50%+36rem)]',
       },
     },
     defaultVariants: {
