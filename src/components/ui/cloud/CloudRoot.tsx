@@ -11,7 +11,7 @@ const cloudRootVariants = cva(
         true: '-top-40 sm:-top-80',
       },
       right: {
-        true: 'top-[calc(100%-13rem)] sm:top-[calc(100%-30rem)]',
+        true: 'top-[calc(100%-28rem)] sm:top-[calc(100%-50rem)]',
       },
     },
     defaultVariants: {

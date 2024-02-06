@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 
 import { Skeleton } from '@/components/animations/skeleton';
@@ -8,7 +8,8 @@ import { useDebounce } from '@/hooks';
 import { useGetGeocodingList } from '@/services/gecoding';
 
 export const AutoCompleteGeocoding = () => {
-  const [value, setValue] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState<string>('');
   const debouncedValue = useDebounce<string | null>(value, 500);
 
   const { data, isFetching } = useGetGeocodingList(debouncedValue);
@@ -18,8 +19,17 @@ export const AutoCompleteGeocoding = () => {
   };
 
   const handleClearAll = useCallback(() => {
-    setValue(null);
+    setValue('');
   }, []);
+
+  useEffect(() => {
+    if (debouncedValue === '') {
+      if (inputRef.current) {
+        inputRef.current.value = '';
+        inputRef.current.focus();
+      }
+    }
+  }, [debouncedValue, handleClearAll]);
 
   return (
     <>
@@ -29,6 +39,7 @@ export const AutoCompleteGeocoding = () => {
         placeholder="Search for a city or place"
         disabled={isFetching}
         autoComplete="off"
+        ref={inputRef}
       />
       {isFetching && (
         <Skeleton.Root>

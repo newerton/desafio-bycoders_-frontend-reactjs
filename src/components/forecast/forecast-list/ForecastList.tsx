@@ -1,115 +1,98 @@
 'use client';
 
-import { twMerge } from 'tailwind-merge';
+import { useCallback } from 'react';
 
-import { hours } from '@/libs/utils/date';
+import { TransitionAndIntersection } from '@/components/animations/transition-and-intersection';
+import { ForecastCard } from '@/components/cards/forecast';
+import { Button } from '@/components/ui/button';
 import { useForecastsStore } from '@/stores';
 
-const US_AQI_COLORS = [
-  {
-    bgColor: 'bg-green-500',
-    range: [0, 50],
-  },
-  {
-    bgColor: 'bg-yellow-500',
-    range: [51, 100],
-  },
-  {
-    bgColor: 'bg-orange-500',
-    range: [101, 150],
-  },
-  {
-    bgColor: 'bg-red-500',
-    range: [151, 200],
-  },
-  {
-    bgColor: 'bg-purple-500',
-    range: [201, 300],
-  },
-  {
-    bgColor: 'bg-stone-500',
-    range: [301, 500],
-  },
-];
 export const ForecastList = () => {
-  const { forecasts } = useForecastsStore();
+  const { forecasts, clearForecast } = useForecastsStore();
+
+  const handleClearForecast = useCallback(() => {
+    clearForecast();
+  }, [clearForecast]);
 
   return (
-    <div className="lg:px-10 w-full grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4">
-      {forecasts?.map((item) => {
-        const current = item.forecast.current;
-        const currentUnits = item.forecast.current_units;
-        const currentAirQuality = item.airQuality.current;
+    <>
+      {forecasts.length > 0 && (
+        <div className="lg:px-10 w-full mb-4">
+          <Button color="red" onClick={handleClearForecast}>
+            Remove all
+          </Button>
+        </div>
+      )}
+      <div className="lg:px-10 w-full grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4 mb-10 cursor-default select-none">
+        {forecasts?.map((item, index) => {
+          const current = item.forecast.current;
+          const currentUnits = item.forecast.current_units;
+          const currentAirQuality = item.airQuality.current;
 
-        const findUsAqiColor = (usAqi: number) => {
-          return US_AQI_COLORS.find((color) => {
-            return usAqi >= color.range[0] && usAqi <= color.range[1];
-          });
-        };
-
-        const color = findUsAqiColor(currentAirQuality.us_aqi);
-
-        return (
-          <div
-            key={item.geocoding.id}
-            className="flex flex-col border-2 shadow-md rounded-md p-2"
-          >
-            <div>
-              <div className="text-base font-semibold">
-                {item.geocoding.name},{' '}
-                {item.geocoding.admin1 || item.geocoding.admin2}
-              </div>
-              <div className="text-xs">
-                {hours(item.geocoding.timestamp, item.geocoding.timezone)}
-              </div>
-            </div>
-            <div>
-              <div>
-                <div>Imagem</div>
-                <div>
-                  {current.temperature_2m}{' '}
-                  <span>{currentUnits.temperature_2m}</span>
+          return (
+            <TransitionAndIntersection
+              key={item.geocoding.id}
+              valueInitial="opacity-0 translate-y-28"
+              valueFinal="opacity-100 translate-y-0"
+              duration={(index * 100 + 300).toString()}
+            >
+              <ForecastCard.Root is_day={current.is_day}>
+                <ForecastCard.Header className="flex justify-between">
+                  <ForecastCard.Name
+                    geocoding_id={item.geocoding.id}
+                    city={item.geocoding.city}
+                    state={item.geocoding.state}
+                    country_code={item.geocoding.country_code}
+                    timestamp={item.geocoding.timestamp}
+                    timezone={item.geocoding.timezone}
+                    className="p-2"
+                  />
+                  <ForecastCard.ButtonsActions
+                    geocoding_id={item.geocoding.id}
+                  />
+                </ForecastCard.Header>
+                <ForecastCard.Content>
+                  <div className="flex items-center">
+                    <ForecastCard.Image
+                      weather_code={current.weather_code}
+                      is_day={Boolean(current.is_day)}
+                    />
+                    <ForecastCard.Temperature
+                      temperature={current.temperature_2m}
+                      temperature_unit={currentUnits.temperature_2m}
+                    />
+                  </div>
+                  <ForecastCard.Description
+                    weather_code={current.weather_code}
+                    apparent_temperature={current.apparent_temperature}
+                    apparent_temperature_unit={
+                      currentUnits.apparent_temperature
+                    }
+                  />
+                </ForecastCard.Content>
+                <div className="grid grid-cols-2 lg:grid-cols-4 p-2 gap-2">
+                  <ForecastCard.AirQuality us_aqi={currentAirQuality.us_aqi} />
+                  <ForecastCard.Wind
+                    title="Wind"
+                    value={current.wind_speed_10m}
+                    unit={currentUnits.wind_speed_10m}
+                  />
+                  <ForecastCard.Info
+                    title="Humidity"
+                    value={current.relative_humidity_2m}
+                    unit={currentUnits.relative_humidity_2m}
+                  />
+                  <ForecastCard.Info
+                    title="Visibility"
+                    value={current.visibility / 1000}
+                    unit="km"
+                  />
                 </div>
-              </div>
-              <div>
-                <div>Ensolarado</div>
-                <div>
-                  Sensação Térmica {current.apparent_temperature}
-                  {currentUnits.apparent_temperature}
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2">
-              <div>
-                <div>Qualidade do ar</div>
-                <div className="flex gap-2 items-center">
-                  <div
-                    className={twMerge(color?.bgColor, 'w-3 h-3 rounded-full')}
-                  />{' '}
-                  {currentAirQuality.us_aqi}
-                </div>
-              </div>
-              <div>
-                <div>Vento</div>
-                <div>
-                  {current.wind_speed_10m} {currentUnits.wind_speed_10m}
-                </div>
-              </div>
-              <div>
-                <div>Umidade</div>
-                <div>
-                  {current.relative_humidity_2m}
-                  {currentUnits.relative_humidity_2m}
-                </div>
-              </div>
-              <div>
-                <div>Visibilidade</div>
-                <div>{current.visibility / 1000} km</div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
+              </ForecastCard.Root>
+            </TransitionAndIntersection>
+          );
+        })}
+      </div>
+    </>
   );
 };

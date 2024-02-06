@@ -36,8 +36,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           }),
         )}
         ref={ref}
-        {...props}
         defaultValue={undefined}
+        {...props}
       />
     );
   },

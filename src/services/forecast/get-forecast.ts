@@ -8,22 +8,23 @@ export type ForecastProps = {
 };
 
 export type ForecastResponse = {
-  latitude: number;
-  longitude: number;
-  generationtime_ms: number;
-  utc_offset_seconds: number;
-  timezone: string;
-  timezone_abbreviation: string;
-  elevation: number;
   current_units: CurrentUnits;
   current: Current;
+  elevation: number;
+  generationtime_ms: number;
   hourly_units: HourlyUnits;
   hourly: Hourly;
+  latitude: number;
+  longitude: number;
+  timezone_abbreviation: string;
+  timezone: string;
+  utc_offset_seconds: number;
 };
 
 export type Current = {
   apparent_temperature: number;
   interval: number;
+  is_day: boolean;
   relative_humidity_2m: number;
   temperature_2m: number;
   time: string;
@@ -36,6 +37,7 @@ export type Current = {
 export type CurrentUnits = {
   apparent_temperature: string;
   interval: string;
+  is_day: string;
   relative_humidity_2m: string;
   temperature_2m: string;
   time: string;
@@ -46,23 +48,26 @@ export type CurrentUnits = {
 };
 
 export type Hourly = {
-  time: string[];
-  temperature_2m: number[];
+  is_day: boolean[];
   relative_humidity_2m: number[];
-  wind_speed_10m: number[];
+  temperature_2m: number[];
+  time: string[];
   weather_code: number[];
+  wind_speed_10m: number[];
 };
 
 export type HourlyUnits = {
-  time: string;
-  temperature_2m: string;
+  is_day: string;
   relative_humidity_2m: string;
-  wind_speed_10m: string;
+  temperature_2m: string;
+  time: string;
   weather_code: string;
+  wind_speed_10m: string;
 };
 
 const current = [
   'apparent_temperature',
+  'is_day',
   'relative_humidity_2m',
   'temperature_2m',
   'visibility',
@@ -71,10 +76,11 @@ const current = [
   'wind_speed_10m',
 ];
 const hourly = [
-  'temperature_2m',
-  'wind_speed_10m',
+  'is_day',
   'relative_humidity_2m',
+  'temperature_2m',
   'weather_code',
+  'wind_speed_10m',
 ];
 
 export const getForecast = async ({

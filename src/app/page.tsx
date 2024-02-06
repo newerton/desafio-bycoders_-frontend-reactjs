@@ -5,7 +5,7 @@ import { Cloud } from '@/components/ui/cloud';
 export default function Home() {
   return (
     <>
-      <div className="relative isolate px-6 pt-14 lg:px-8">
+      <div className="relative isolate px-6 pt-14 lg:px-8 flex-grow">
         <Cloud.Root left>
           <Cloud.Item
             left

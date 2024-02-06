@@ -1,5 +1,4 @@
 import { type VariantProps, cva } from 'class-variance-authority';
-import Name from 'next/image';
 import { forwardRef } from 'react';
 
 import { cn } from '@/libs/utils';
@@ -29,7 +28,7 @@ const GeocodingListLabel = forwardRef<HTMLDivElement, GeocodingListLabelProps>(
         ref={ref}
         {...props}
       >
-        {city}, {state}, {country}
+        {city}, {state ? `${state},` : ''} {country}
       </div>
     );
   },

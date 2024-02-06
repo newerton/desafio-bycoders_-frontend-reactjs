@@ -4,9 +4,9 @@ import { useMutation } from '@tanstack/react-query';
 import { type VariantProps, cva } from 'class-variance-authority';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 import { FaRegCircleCheck } from 'react-icons/fa6';
-import { twMerge } from 'tailwind-merge';
 
 import { cn } from '@/libs/utils';
+import { generateUniqueHash } from '@/libs/utils/math';
 import { AirQualityResponse, getAirQuality } from '@/services/air-quality';
 import {
   ForecastProps,
@@ -14,7 +14,7 @@ import {
   getForecast,
 } from '@/services/forecast';
 import { GeocodingListResponse } from '@/services/gecoding';
-import { useForecastsStore } from '@/stores';
+import { GeoCodingStore, useForecastsStore } from '@/stores';
 
 const geocodingListItemVariants = cva(
   'flex hover:bg-stone-100 p-3 rounded-md justify-between items-center',
@@ -38,9 +38,7 @@ export interface GeocodingListItemProps
 
 const GeocodingListItem = forwardRef<HTMLDivElement, GeocodingListItemProps>(
   ({ className, children, item, ...props }, ref) => {
-    const [geocoding, setGeocoding] = useState<GeocodingListResponse | null>(
-      null,
-    );
+    const [geocoding, setGeocoding] = useState<GeoCodingStore | null>(null);
 
     const [added, setAdded] = useState<boolean>(false);
 
@@ -73,7 +71,20 @@ const GeocodingListItem = forwardRef<HTMLDivElement, GeocodingListItemProps>(
     const handleAdd = useCallback(
       (item: GeocodingListResponse) => {
         if (!added) {
-          setGeocoding(item);
+          const prepareGeocodingData = {
+            id: generateUniqueHash(
+              `${item.name},${item.admin1 || item.admin2}`,
+            ),
+            city: item.name,
+            state: item.admin1 || item.admin2,
+            country: item.country,
+            country_code: item.country_code,
+            latitude: item.latitude,
+            longitude: item.longitude,
+            timestamp: new Date().toISOString(),
+            timezone: item.timezone,
+          };
+          setGeocoding(prepareGeocodingData);
           mutation.mutate({
             latitude: item.latitude.toString(),
             longitude: item.longitude.toString(),
@@ -85,10 +96,14 @@ const GeocodingListItem = forwardRef<HTMLDivElement, GeocodingListItemProps>(
 
     useEffect(() => {
       if (item.id) {
-        const itemAdded = findForecast(item.id);
+        const id = generateUniqueHash(
+          `${item.name},${item.admin1 || item.admin2}`,
+        );
+
+        const itemAdded = findForecast(id);
         setAdded(!!itemAdded);
       }
-    }, [item.id, findForecast]);
+    }, [item.id, item.name, item.admin1, item.admin2, findForecast]);
 
     return (
       <div
